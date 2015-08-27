@@ -8,6 +8,8 @@ CPU=-mcpu=cortex-m4
 FPU=-mfpu=fpv4-sp-d16 -mfloat-abi=softfp
 
 TIVAWARE_LIB_PATH=/home/kyle/ti/SW-TM4C/
+TIVAWARE_LIB=${TIVAWARE_LIB_PATH}driverlib/gcc/libdriver.a
+LOCAL_INCLUDES=inc/
 
 #Program name definition for ARM GNU C compiler.
 CC	= ${ARM_TOOLCHAIN}-gcc
@@ -23,18 +25,13 @@ DB	= ${ARM_TOOLCHAIN}-gdb
 #Base arguments for C compiler.
 CFLAGS=-mthumb ${CPU} ${FPU} -ffunction-sections -fdata-sections -MD -std=c99 -Wall -pedantic -c
 #Library paths passed as flags.
-CFLAGS+= -I${TIVAWARE_LIB_PATH} -DPART_$(PART) -DTARGET_IS_BLIZZARD_RA1
-
-#Flags for release build
-CFLAGS_RELEASE = ${CFLAGS} -O2
-#Flags for debug build
-CFLAGS_DEBUG = ${CFLAGS} -g
+CFLAGS+= -I${TIVAWARE_LIB_PATH} -I${LOCAL_INCLUDES} -DPART_$(PART) -DTARGET_IS_BLIZZARD_RA1
 
 # Flags for LD
 LFLAGS  = --gc-sections --entry ResetISR
 
 # Flags for objcopy
-CPFLAGS = -Obinary
+CPFLAGS = -O binary
 
 # Flags for objectdump
 ODFLAGS = -S
@@ -57,14 +54,21 @@ SRC = $(wildcard src/*.c)
 OBJS = $(patsubst src/%.c,obj/%.o,$(SRC))
 EXE = bin/${PROJECT_NAME}
 
-all: dirs $(OBJS) ${PROJECT_NAME}.axf ${PROJECT_NAME}
-#debug: debug ${PROJECT_NAME}.axf ${PROJECT_NAME}
+all: dirs setupRelease $(OBJS) ${PROJECT_NAME}.axf ${PROJECT_NAME}
+debug: dirs setupDebug $(OBJS) ${PROJECT_NAME}.axf ${PROJECT_NAME}
 
-#debug:
-#	@echo Compiling debug $<...
-#	$(CC) $(CFLAGS_DEBUG) ${<} -o ${@}
 dirs:
 	@mkdir -p $(DIRS)
+
+setupDebug:
+	@echo
+	@echo ADDING -g option
+	$(eval CFLAGS_RELEASE = ${CFLAGS} -g)
+
+setupRelease:
+	@echo
+	@echo ADDING -O2 option
+	$(eval CFLAGS_RELEASE = ${CFLAGS} -O2)
 
 obj/%.o : src/%.c
 	@echo
@@ -74,7 +78,7 @@ obj/%.o : src/%.c
 ${PROJECT_NAME}.axf: $(OBJS)
 	@echo
 	@echo Linking $<
-	$(LD) -T $(LINKER_FILE) $(LFLAGS) -o ${EXE}.axf $(OBJS)
+	$(LD) -T $(LINKER_FILE) $(LFLAGS) -o ${EXE}.axf $(OBJS) ${TIVAWARE_LIB}
 
 ${PROJECT_NAME}: ${EXE}.axf
 	@echo
@@ -83,6 +87,21 @@ ${PROJECT_NAME}: ${EXE}.axf
 
 load:
 	sudo lm4flash ${EXE}.bin
+
+loadD:
+	@echo
+	@echo target extended-remote :3333
+	@echo monitor reset halt
+	@echo load
+	@echo monitor reset init
+	@echo
+	arm-none-eabi-gdb ${EXE}.axf
+
+ocd:
+	@echo sudo openocd --file /usr/local/share/openocd/scripts/board/ek-lm4f120xl.cfg
+
+openocd:
+	@echo sudo openocd --file /usr/local/share/openocd/scripts/board/ek-lm4f120xl.cfg
 
 clean:
 	rm bin/* obj/*

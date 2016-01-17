@@ -17,6 +17,8 @@
 #define ADC_CLK_SPEED 1000000
 
 //Number of bits communcated between ADC and micro
-#define ADC_NUM_BITS 16
+//For every transaction between ADC and micro, there will be 3 bytes of information sent
+//Documentation https://www.adafruit.com/datasheets/MCP3008.pdf
+#define ADC_NUM_BITS 8
 
 #endif

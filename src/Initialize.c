@@ -46,7 +46,7 @@ void initADC()
     //GPIOPinConfigure(GPIO_PA3_SSI0FSS);
     GPIOPinConfigure(GPIO_PA4_SSI0RX);
     GPIOPinTypeSSI(GPIO_PORTA_BASE,GPIO_PIN_5|GPIO_PIN_2|GPIO_PIN_4);
-//
+
     SSIConfigSetExpClk(ADC_BASE, sysClockSpeed, SSI_FRF_MOTO_MODE_0,
             SSI_MODE_MASTER, ADC_CLK_SPEED, ADC_NUM_BITS);
     SSIEnable(ADC_BASE);

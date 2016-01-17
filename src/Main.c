@@ -19,6 +19,7 @@ int main(void)
     while(1)
     {   
         SysCtlDelay(2000000);
-        putAndWaitADC(0x4000);
+        uint32_t adcValue = getADCValue(0x0);
+        uint32_t why = adcValue;
     }   
 }

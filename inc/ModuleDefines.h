@@ -21,4 +21,9 @@
 //Documentation https://www.adafruit.com/datasheets/MCP3008.pdf
 #define ADC_NUM_BITS 8
 
+
+#define VOLUME_BASE GPIO_PORTD_BASE
+#define VOLUME_LOW GPIO_PIN_0
+#define VOLUME_MED GPIO_PIN_1
+#define VOLUME_HIGH GPIO_PIN_2
 #endif

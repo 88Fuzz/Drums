@@ -16,6 +16,7 @@ void initialize()
 {
     initClock();
     initADC();
+    initGPIO();
 }
 
 /*
@@ -53,4 +54,10 @@ void initADC()
     flushSSI(ADC_BASE);
 
     writeChipSelectADC(0xff);
+}
+
+void initGPIO()
+{
+    SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOD);
+    GPIOPinTypeGPIOOutput(VOLUME_BASE, VOLUME_LOW|VOLUME_MED|VOLUME_HIGH);
 }

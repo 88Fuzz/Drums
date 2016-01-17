@@ -10,4 +10,5 @@ void initClock();
 //Initialize all SSI modules
 void initADC();
 
+void initGPIO();
 #endif

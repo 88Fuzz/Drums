@@ -26,9 +26,8 @@ void putSSI(uint32_t base, uint32_t data)
 uint32_t getADCValue(uint32_t channel)
 {
     uint8_t data = 0x01;
-    uint32_t retVal = 0, tmp = 0;
     if(channel > 8)
-        return retVal;
+        return 0;
 
     writeChipSelectADC(0);
 
@@ -39,16 +38,7 @@ uint32_t getADCValue(uint32_t channel)
 
     writeChipSelectADC(0xff);
 
-    //TODO Extract to another method
-    getADCRegisterValue(&tmp);
-    getADCRegisterValue(&retVal);
-    tmp = 0;
-    getADCRegisterValue(&tmp);
-    retVal <<= 8;
-    retVal |= tmp;
-    
-    //TODO return a 16 bit value.
-    return retVal;
+    return readADC();
 }
 
 void putAndWaitADC(uint32_t data)
@@ -56,6 +46,20 @@ void putAndWaitADC(uint32_t data)
     writeChipSelectADC(0);
     writeADC(data);
     writeChipSelectADC(0xff);
+}
+
+uint32_t readADC()
+{
+    uint32_t retVal = 0, tmp = 0;
+
+    getADCRegisterValue(&tmp);
+    tmp = 0;
+    getADCRegisterValue(&retVal);
+    getADCRegisterValue(&tmp);
+    retVal <<= 8;
+    retVal |= tmp;
+    
+    return retVal;
 }
 
 void getADCRegisterValue(uint32_t *data)

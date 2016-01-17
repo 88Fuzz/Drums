@@ -7,6 +7,7 @@ void flushSSI(uint32_t);
 void putSSI(uint32_t, uint32_t);
 void putAndWaitSSI(uint32_t, uint32_t);
 uint32_t getADCValue(uint32_t);
+uint32_t readADC();
 void putAndWaitADC(uint32_t);
 void getADCRegisterValue(uint32_t *);
 void writeADC(uint32_t);

@@ -3,6 +3,7 @@
 #include "Initialize.h"
 #include "SSIUtils.h"
 #include "ModuleDefines.h"
+#include "VolumeHelper.h"
 
 #include "inc/hw_memmap.h"
 #include "inc/hw_types.h"
@@ -18,8 +19,8 @@ int main(void)
 
     while(1)
     {   
-        SysCtlDelay(2000000);
-        uint32_t adcValue = getADCValue(0x0);
-        uint32_t why = adcValue;
+        SysCtlDelay(1500);
+        uint16_t adcValue = getADCValue(0x0);
+        volumeLights(adcValue);
     }   
 }

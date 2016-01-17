@@ -8,13 +8,15 @@
 #include "driverlib/sysctl.h"
 #include "driverlib/gpio.h"
 
-void volumeLights(uint16_t volume)
+void volumeLights(int32_t volume)
 {
+    if(volume < VOLUME_DIFF_THRESHOLD)
+        return;
+
     if(volume > VOLUME_LOW_THRESHOLD)
         GPIOPinWrite(VOLUME_BASE, VOLUME_LOW, 0xff);
     else
         GPIOPinWrite(VOLUME_BASE, VOLUME_LOW, 0);
-
 
     if(volume > VOLUME_MED_THRESHOLD)
         GPIOPinWrite(VOLUME_BASE, VOLUME_MED, 0xff);

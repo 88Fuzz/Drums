@@ -16,11 +16,15 @@ int main(void)
 {
     SysCtlClockSet(SYSCTL_SYSDIV_5|SYSCTL_USE_PLL|SYSCTL_XTAL_16MHZ|SYSCTL_OSC_MAIN);
     initialize();
+    uint16_t adcValue = 0;
+    uint16_t prevAdcValue = 0;
 
     while(1)
     {   
         SysCtlDelay(1500);
-        uint16_t adcValue = getADCValue(0x0);
-        volumeLights(adcValue);
+        adcValue = getADCValue(0x0);
+        int32_t adcDiff = adcValue - prevAdcValue;
+        volumeLights(adcDiff);
+        prevAdcValue = adcValue;
     }   
 }
